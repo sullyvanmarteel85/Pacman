@@ -23,11 +23,11 @@ program pacman_game
        character(kind=c_char), dimension(*) :: msg
      end subroutine
 
-     integer(c_int) function mvprintw(y, x, fmt) bind(C, name="mvprintw") ! affiche une chaîne à une position donnée
+     subroutine mvprintw(y, x, fmt) bind(C, name="mvprintw") ! affiche une chaîne à une position donnée
         import :: c_int, c_char
         integer(c_int), value :: y, x
         character(kind=c_char), dimension(*) :: fmt
-     end function
+     end subroutine
      ! /!\ coord en (y,x) et non en (x,y)
 
      subroutine refresh() bind(C, name="refresh") ! met à jour l’écran avec les changements
@@ -64,13 +64,16 @@ program pacman_game
 ! DEF VARIABLE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-integer :: Xpac,Ypac,p,er
+integer :: Xpac,Ypac,er,ert,er2,m,N,i,j
 character :: pacman
 character(50):: name,d
 type(c_ptr) :: win
 logical :: bump
 
 type(remplissage) :: v, mh, mv, mm, o, a, x, remps, test
+
+character(1024):: tampon
+type(remplissage), dimension(:,:),allocatable:: tabremplissage
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !DEF PACMAN
@@ -105,16 +108,16 @@ close(unit=10) ! à mettre a la fin du programme
 !1. affichage dynamique contrôlable
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-!win=initscr() !permet de lancer ncurses /!\ NE PAS METTRE EN COMMENTAIRE CAR PERMETS D'UTILISER LES FCT DE LA BIBLIOTHEQUE
+!win=initscr() !permet de lancer ncurses /!\ NE PAS METTRE EN COMMENTAIRE QUAND UTILISE CAR PERMETS D'UTILISER LES FCT DE LA BIBLIOTHEQUE
 !bump = .true.
 
 !do while (1==1)
 !    call clear()
 !    bump= .not. bump
 !    if (bump) then
-!        p=mvprintw(0,0,'C'//char(0))
+!        call mvprintw(0,0,'C'//char(0))
 !    else
-!        p=mvprintw(4,4,'C'//char(0))
+!        call mvprintw(4,4,'C'//char(0))
 !    end if
 !    call refresh()
 !    call sleep(1)
@@ -164,19 +167,77 @@ x%state = 4
 !2. créer un contenant de remplissage (tableau)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+m=27
+N=68
 
+allocate(tabremplissage(m+1,N+1),stat=ert)
 
+if (ert/=0) then
+    write(*,*)"erreur tableau"
+end if
 
+open(unit=11,file='map.txt',status='old',action='read',iostat=er2)
 
+if (er>0) then
+        write(*,*)"erreur fichier map"
+end if
 
+do i=1,m
+        read(11,'(A)')tampon !(A) permet de lire tous les characteres dont les espaces
+!        print*,trim(tampon) !trim() permets de reccuperer la chaine de caractere tout pile ( enleve les espaces et caractere en trop a la fin)
+        do j=1,N
+            select case (tampon(j:j)) !utilise la chaine de charactere comme un tableau
+                case('-')
+                    tabremplissage(i,j)%state = 6
+                case('|')
+                    tabremplissage(i,j)%state = 5
+                case('o')
+                    tabremplissage(i,j)%state = 2
+                case('a')
+                    tabremplissage(i,j)%state = 3
+                case('x')
+                    tabremplissage(i,j)%state = 4
+                case('.')
+                    tabremplissage(i,j)%state = 1
+                case default
+                    tabremplissage(i,j)%state = 0
+            end select
+        end do
+end do
 
+close(unit=11)
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!3. affichage tableau remplissage => adaptation de l'affichage dynamique (1) pour le jeu
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+win=initscr()
 
-
-
-
-
+do while (1==1)
+    call clear()
+    do i=1,m
+        do j=1,N
+            select case (tabremplissage(i,j)%state )
+                case (6)
+                    call mvprintw(i,j,'-'//char(0))
+                case (5)
+                    call mvprintw(i,j,'|'//char(0))
+                case (4)
+                    call mvprintw(i,j,'x'//char(0))
+                case (3)
+                    call mvprintw(i,j,'a'//char(0))
+                case (2)
+                    call mvprintw(i,j,'o'//char(0))
+                case (1)
+                    call mvprintw(i,j,'.'//char(0))
+                case default
+                    call mvprintw(i,j,' '//char(0))
+            end select
+        end do
+    end do
+    call refresh()
+    call usleep(1000000)
+end do
 
 
 
