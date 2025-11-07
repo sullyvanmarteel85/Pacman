@@ -5,16 +5,16 @@ fonctionnalités :
 1 v exportation des résultats d'une partie
 1 v demande et stockage nom du joueur
 
-2 - création du contenu de l'environnement ( murs + coins )
+2 v création du contenu de l'environnement ( murs + coins )
 2 - miettes (inerte) apres collecte des coins
 2 - transformation en coins apres collecte bonus
 2 - définition d'un joueur ( mobilité + détection et restrictivité des murs + détection et collecte de coins  + détection et collecte de bonus + score)
-2 - calcul du score
+2 v calcul du score
 
 3 - affichage environnement et joueur en temps réél 
 3 - deplacement joueur en fct des input clavier
 
-4 - création d'un environnement simulé (=terrain ) (spawn du joueur en (0,0))
+4 v création d'un environnement simulé (=terrain ) (spawn du joueur en (1,1))
 
 5 - comparaison et tris des scores et des joueurs 
 
