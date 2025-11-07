@@ -1,0 +1,48 @@
+fonctionnalités :
+
+1 v affichage dynamique contrôlable
+1 - détection et réaction d'appui de touches 
+1 - exportation des résultats d'une partie
+1 - demande et stockage nom du joueur
+
+2 - création du contenu de l'environnement ( murs + coins )
+2 - miettes (inerte) apres collecte des coins
+2 - transformation en coins apres collecte bonus
+2 - définition d'un joueur ( mobilité + détection et restrictivité des murs + détection et collecte de coins  + détection et collecte de bonus + score)
+2 - calcul du score
+
+3 - affichage environnement et joueur en temps réél 
+3 - deplacement joueur en fct des input clavier
+
+4 - création d'un environnement simulé (=terrain ) (spawn du joueur en (0,0))
+
+5 - comparaison et tris des scores et des joueurs 
+
+
+étapes:
+
+1
+v créér un affichage réactif selon une logique 
+- print lors d'appui de touche
+- création de système de sauvegarde et modification de fichier 
+
+2
+- création d'un remplissage : [coins, bonus A, bonus X, miettes, vide, mur v, mur h]: variable d'etats, [coord]: variables d'ID 
+- création de la fonction de changement d'etat de remplissage : bonus A -> coins, bonus X -> coins, coins -> miette
+- créer un contenant de remplissage (tableau)
+- création du joueur : [O, A, X]: variable d'état, [coord]: variable de position, [s]: variable de score, [m]: mémoire du nb coins mangé depuis le dernier reset
+- création de la fonction de changement de score (compteur)
+- création d'une fonction de déplacement joueur : haut, bas, gauche, droite ( 4 fonctions ), coord en entrée -> pas deplacement si mur
+- creation de la fonctionde changement d'état du joueur : test de remplissage ( via les coord) a chaque tours 				/!\ à changer si jeu trop lent 
+
+3
+- affichage tableau remplissage
+- affichage icone
+- relier fonctions deplacement joueur aux flèches (avec la fonction du print d'appui de touche)
+
+4
+- création d'une lecture du fichier -> chaine de caractere
+- remplir le tableau des remplissages en fct de map.txt (analyse du type de charactere )
+
+5
+- analyse fichier pour mettre le score et le nom joueur au bon endroit
