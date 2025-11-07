@@ -34,10 +34,13 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="ext.f90" />
-		<Unit filename="main.f90">
+		<Unit filename="ext.f90">
 			<Option weight="0" />
 		</Unit>
+		<Unit filename="main.f90">
+			<Option weight="1" />
+		</Unit>
+		<Unit filename="map.txt" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

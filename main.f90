@@ -64,7 +64,7 @@ program pacman_game
 ! DEF VARIABLE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-integer :: Xpac,Ypac,er,ert,er2,m,N,i,j
+integer :: Xpac,Ypac,er,ert,er2,m,N,i,j,compteur,AA,XX
 character :: pacman
 character(50):: name,d
 type(c_ptr) :: win
@@ -151,13 +151,13 @@ close(unit=10) ! à mettre a la fin du programme
 
 ! valeurs des states : vide v=0 ; miette mm= 1 ; coins o=2 ; bonusa a=3 ; bonusX x=4 ; mur verticaux mv=5 ; mur horizontaux mh=6
 
-v%state = 0
-mh%state = 6
-mv%state = 5
-mm%state = 1
-o%state = 2
-a%state = 3
-x%state = 4
+!v%state = 0
+!mh%state = 6
+!mv%state = 5
+!mm%state = 1
+!o%state = 2
+!a%state = 3
+!x%state = 4
 
 !test = changement_etat_remplissage(mv,remps)
 
@@ -238,7 +238,5 @@ do while (1==1)
     call refresh()
     call usleep(1000000)
 end do
-
-
 
 end program pacman_game
