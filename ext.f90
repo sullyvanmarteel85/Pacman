@@ -171,39 +171,44 @@ end function
 !3. affichage tableau remplissage => adaptation de l'affichage dynamique (1) pour le jeu
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-subroutine affichage_labyrinthe(tabremplissage)
+subroutine affichage(tabremplissage,player)
     implicit none
 
+    type(joueur), intent(inout) :: player
     type(remplissage), dimension(:,:),intent(inout):: tabremplissage
 
-    integer :: i,j,m,N
+    integer :: k,l,m,N,X,Y
 
     m=27
     N=68
+    X=player%X
+    Y=player%Y
 
     call clear()
-    do i=1,m
-        do j=1,N
-            select case (tabremplissage(i,j)%state )
+    do k=1,m
+        do l=1,N
+            select case (tabremplissage(k,l)%state )
                 case (6)
-                    call mvprintw(i,j,'-'//char(0))
+                    call mvprintw(k,l,'-'//char(0))
                 case (5)
-                    call mvprintw(i,j,'|'//char(0))
+                    call mvprintw(k,l,'|'//char(0))
                 case (4)
-                    call mvprintw(i,j,'x'//char(0))
+                    call mvprintw(k,l,'x'//char(0))
                 case (3)
-                    call mvprintw(i,j,'a'//char(0))
+                    call mvprintw(k,l,'a'//char(0))
                 case (2)
-                    call mvprintw(i,j,'o'//char(0))
+                    call mvprintw(k,l,'o'//char(0))
                 case (1)
-                    call mvprintw(i,j,'.'//char(0))
+                    call mvprintw(k,l,'.'//char(0))
                 case default
-                    call mvprintw(i,j,' '//char(0))
+                    call mvprintw(k,l,' '//char(0))
             end select
+
+            call mvprintw(X,Y,'C'//char(0))
+
         end do
     end do
     call refresh()
-    call usleep(1000000)
 end subroutine
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -220,45 +225,54 @@ type(joueur), intent(inout) :: player
 
 integer :: touche,i,j,m,N
 
-    m=27
-    N=68
+m=27
+N=68
 touche=0
+i=player%X
+j=player%Y
 
-do while (touche/=258 .or. touche/=259 .or. touche/=260 .or. touche/=261) ! ne fait rien si la touche préssée n'est pas une fleche
+
+do while (touche/=258 .and. touche/=259 .and. touche/=260 .and. touche/=261) ! ne fait rien si la touche préssée n'est pas une fleche
     touche=getch()
-    do i=1,m
-        do j=1,N
-            select case (tabremplissage(i,j)%state)
-                case (6)
-                    touche=0 ! n'avance pas en cas de mur
-                case (5)
-                    touche=0
-            end select
-        end do
-    end do
-end do
-
-do i=1,m
-    do j=1,N
+    if (touche==258 .or. touche==259 .or. touche==260 .or. touche==261) then
         select case (touche)
             case(258)
-                player%X=i+1
-                player%Y=j
+                if (tabremplissage(i+1,j)%state==5 .or. tabremplissage(i+1,j)%state==6) then
+                    touche=0 ! n'avance pas en cas de mur
+                end if
             case(259)
-                player%X=i-1
-                player%Y=j
+                if (tabremplissage(i-1,j)%state==5 .or. tabremplissage(i+1,j)%state==6) then
+                    touche=0
+                end if
             case(260)
-                player%X=i
-                player%Y=j-1
+                if (tabremplissage(i,j-1)%state==5 .or. tabremplissage(i+1,j)%state==6) then
+                    touche=0
+                end if
             case(261)
-                player%X=i
-                player%Y=j+1
-            case default
-                player%X=i
-                player%Y=j
+                if (tabremplissage(i,j+1)%state==5 .or. tabremplissage(i+1,j)%state==6) then
+                    touche=0
+                end if
         end select
-    end do
+    end if
 end do
+
+select case (touche)
+    case(258)
+        player%X=i+1
+        player%Y=j
+    case(259)
+        player%X=i-1
+        player%Y=j
+    case(260)
+        player%X=i
+        player%Y=j-1
+    case(261)
+        player%X=i
+        player%Y=j+1
+!    case default
+!        player%X=i
+!        player%Y=j
+end select
 
 end subroutine
 

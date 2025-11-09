@@ -6,13 +6,13 @@ fonctionnalités :
 1 v demande et stockage nom du joueur
 
 2 v création du contenu de l'environnement ( murs + coins )
-2 - miettes (inerte) apres collecte des coins
-2 - transformation en coins apres collecte bonus
-2 - définition d'un joueur ( mobilité + détection et restrictivité des murs + détection et collecte de coins  + détection et collecte de bonus + score)
+2 v miettes (inerte) apres collecte des coins
+2 v transformation en coins apres collecte bonus
+2 v définition d'un joueur ( mobilité + détection et restrictivité des murs + détection et collecte de coins  + détection et collecte de bonus + score)
 2 v calcul du score
 
 3 - affichage environnement et joueur en temps réél 
-3 - deplacement joueur en fct des input clavier
+3 v deplacement joueur en fct des input clavier
 
 4 v création d'un environnement simulé (=terrain ) (spawn du joueur en (1,1))
 
@@ -32,41 +32,19 @@ v créer variable nom joueur + question
 v création d'un remplissage : [coins, bonus A, bonus X, miettes, vide, mur v, mur h]: variable d'etats, [coord]: variables d'ID 
 v création de la fonction de changement d'etat des remplissages : bonus A -> coins, bonus X -> coins, coins -> miette
 v créer un contenant de remplissage (tableau)
-- création du joueur : [O, A, X]: variable d'état, [coord]: variable de position, [s]: variable de score, [m]: mémoire du nb coins mangé depuis le dernier reset
+v création du joueur : [O, A, X]: variable d'état, [coord]: variable de position, [s]: variable de score 
 v création de la fonction de changement de score (compteur)
-- création d'une fonction de déplacement joueur : haut, bas, gauche, droite ( 4 fonctions ), coord en entrée -> pas deplacement si mur
-- creation de la fonctionde changement d'état du joueur : test de remplissage ( via les coord) a chaque tours 				/!\ à changer si jeu trop lent 
+v création d'une subroutine de déplacement joueur : haut, bas, gauche, droite ( 1 fonctions ), coord en entrée -> pas deplacement si mur
+v creation de la fonctionde changement d'état du joueur : test de remplissage ( via les coord) a chaque tours 				/!\ à changer si jeu trop lent 
 
 3
 v affichage tableau remplissage
 - affichage icone (pacman representé par un C)
-- relier fonctions deplacement joueur aux flèches (avec la fonction du print d'appui de touche)
+v relier fonctions deplacement joueur aux flèches (avec la fonction du print d'appui de touche)
 
 4
-- création d'une lecture du fichier -> chaine de caractere (creation du labyrinthe)
+v création d'une lecture du fichier -> chaine de caractere (creation du labyrinthe)
 v remplir le tableau des remplissages en fct de map.txt (analyse du type de charactere )
 
 5
 - analyse fichier pour mettre le score et le nom joueur au bon endroit
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-notes et observations : 
-
-ID clavier des flèches : >=261 ; <=260 ; ^=259 ; v=258

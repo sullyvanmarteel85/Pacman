@@ -8,13 +8,13 @@ program pacman_game
 ! DEF VARIABLE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-integer :: Xpac,Ypac,p,er,ert,er2,m,N,i,j,compteur,AA,XX
-character :: pacman
+integer :: p,er,ert,er2,m,N,i,j,compteur,AA,XX
 character(50):: name,d
 type(c_ptr) :: win
 logical :: bump
 
 type(remplissage) :: v, mh, mv, mm, o, a, x, remps, test
+type(joueur)pacmanplayer
 
 character(1024):: tampon
 type(remplissage), dimension(:,:),allocatable:: tabremplissage
@@ -23,9 +23,8 @@ type(remplissage), dimension(:,:),allocatable:: tabremplissage
 !DEF PACMAN
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-Xpac=1
-Ypac=1
-pacman='C'
+pacmanplayer%X=2
+pacmanplayer%Y=2
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !1. demande et stockage nom du joueur
@@ -160,12 +159,13 @@ call cbreak()
 call noecho()
 call keypad(win,logical(.true.,c_bool))
 
-
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!squelette
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+call affichage(tabremplissage,pacmanplayer)
 do while (1==1)
-    call clear()
-    call affichage_labyrinthe(tabremplissage)
-    call refresh()
-    call sleep(1)
+    call deplacement(tabremplissage,pacmanplayer)
+    call affichage(tabremplissage,pacmanplayer)
 end do
 
 
