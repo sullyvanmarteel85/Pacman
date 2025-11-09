@@ -5,66 +5,10 @@ program pacman_game
     implicit none
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! IMPORTATION FONCTIONS BIBLIOTHEQUE NCURSES ( INTERFACE )
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  interface
-
-     function initscr() bind(C, name="initscr") ! initialise l'ecran pour utiliser l'affichage ncurses
-       use iso_c_binding
-       type(c_ptr) :: initscr
-     end function
-
-     subroutine endwin() bind(C, name="endwin") ! remets le terminal hors ncurses
-     end subroutine
-
-     subroutine printw(msg) bind(C, name="printw") ! affiche une chaine à la position du curseur
-       use iso_c_binding
-       character(kind=c_char), dimension(*) :: msg
-     end subroutine
-
-     subroutine mvprintw(y, x, fmt) bind(C, name="mvprintw") ! affiche une chaîne à une position donnée
-        import :: c_int, c_char
-        integer(c_int), value :: y, x
-        character(kind=c_char), dimension(*) :: fmt
-     end subroutine
-     ! /!\ coord en (y,x) et non en (x,y)
-
-     subroutine refresh() bind(C, name="refresh") ! met à jour l’écran avec les changements
-     end subroutine
-
-     subroutine clear() bind(C, name="clear") ! fface le contenu de l’écran
-     end subroutine
-
-     subroutine usleep(usec) bind(C, name="usleep") ! mets l'ecran en pause ( utiliser sleep() si des secondes suffisent)
-        import :: c_int
-        integer(c_int), value :: usec
-     end subroutine
-    !usleep est en microsecondes
-
-    subroutine cbreak() bind(C, name="cbreak") ! active la lecture immédiate du clavier
-    end subroutine
-
-    subroutine noecho() bind(C, name="noecho") ! empêche l’affichage des caractères tapés
-    end subroutine
-
-    integer(c_int) function getch() bind(C, name="getch") ! lit une touche clavier sans attendre Entrée
-        import :: c_int
-    end function
-
-    subroutine keypad(win, bf) bind(C, name="keypad") ! permet de lire le keypad
-        import :: c_ptr, c_bool
-        type(c_ptr), value :: win
-        logical(c_bool), value :: bf
-    end subroutine
-
-  end interface
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! DEF VARIABLE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-integer :: Xpac,Ypac,er,ert,er2,m,N,i,j,compteur,AA,XX
+integer :: Xpac,Ypac,p,er,ert,er2,m,N,i,j,compteur,AA,XX
 character :: pacman
 character(50):: name,d
 type(c_ptr) :: win
@@ -79,8 +23,8 @@ type(remplissage), dimension(:,:),allocatable:: tabremplissage
 !DEF PACMAN
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-Xpac=0
-Ypac=0
+Xpac=1
+Ypac=1
 pacman='C'
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -208,35 +152,21 @@ end do
 close(unit=11)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!3. affichage tableau remplissage => adaptation de l'affichage dynamique (1) pour le jeu
+!initialisation
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 win=initscr()
+call cbreak()
+call noecho()
+call keypad(win,logical(.true.,c_bool))
+
 
 do while (1==1)
     call clear()
-    do i=1,m
-        do j=1,N
-            select case (tabremplissage(i,j)%state )
-                case (6)
-                    call mvprintw(i,j,'-'//char(0))
-                case (5)
-                    call mvprintw(i,j,'|'//char(0))
-                case (4)
-                    call mvprintw(i,j,'x'//char(0))
-                case (3)
-                    call mvprintw(i,j,'a'//char(0))
-                case (2)
-                    call mvprintw(i,j,'o'//char(0))
-                case (1)
-                    call mvprintw(i,j,'.'//char(0))
-                case default
-                    call mvprintw(i,j,' '//char(0))
-            end select
-        end do
-    end do
+    call affichage_labyrinthe(tabremplissage)
     call refresh()
-    call usleep(1000000)
+    call sleep(1)
 end do
+
 
 end program pacman_game
