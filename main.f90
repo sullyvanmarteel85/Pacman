@@ -30,8 +30,8 @@ pacmanplayer%Y=2
 !1. demande et stockage nom du joueur
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-!print*,'entrez le nom du joueur'
-!read(*,*)name
+print*,'entrez le nom du joueur'
+read(*,*)name
  ! /!\  A METTRE AVANT LE INITSCREEN CAR CMD DE FORTRAN
 
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -165,6 +165,7 @@ call keypad(win,logical(.true.,c_bool))
 call affichage(tabremplissage,pacmanplayer)
 do while (1==1)
     call deplacement(tabremplissage,pacmanplayer)
+    call changement_etat (tabremplissage,pacmanplayer)
     call affichage(tabremplissage,pacmanplayer)
 end do
 

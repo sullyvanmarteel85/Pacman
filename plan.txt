@@ -11,7 +11,7 @@ fonctionnalités :
 2 v définition d'un joueur ( mobilité + détection et restrictivité des murs + détection et collecte de coins  + détection et collecte de bonus + score)
 2 v calcul du score
 
-3 - affichage environnement et joueur en temps réél 
+3 v affichage environnement et joueur en temps réél 
 3 v deplacement joueur en fct des input clavier
 
 4 v création d'un environnement simulé (=terrain ) (spawn du joueur en (1,1))
@@ -39,7 +39,7 @@ v creation de la fonctionde changement d'état du joueur : test de remplissage (
 
 3
 v affichage tableau remplissage
-- affichage icone (pacman representé par un C)
+v affichage icone (pacman representé par un C)
 v relier fonctions deplacement joueur aux flèches (avec la fonction du print d'appui de touche)
 
 4
@@ -48,3 +48,31 @@ v remplir le tableau des remplissages en fct de map.txt (analyse du type de char
 
 5
 - analyse fichier pour mettre le score et le nom joueur au bon endroit
+
+
+fonctions :
+- function changement_etat_remplissage(rempi,rempf)
+- function score (remp,player,compt)
+- function changement_etat_joueur(tabremplissage,joueuri,joueurf)
+- subroutine affichage(tabremplissage,player)
+- subroutine deplacement(tabremplissage,player)
+
+
+
+reste à faire => empilement des fonctions + debugging squelette 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

@@ -67,31 +67,78 @@ type :: remplissage
 end type
 
 type :: joueur
-    integer :: Y, X, AA, XX
+    integer :: Y, X, AA, XX ! coordonée, bonus a mangé ?, bonus X mangé ?
 end type
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! contains
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+contains
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!2.création de la fonction de changement d'etat du joueur
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+subroutine changement_etat_joueur(tabremplissage,player)
+    implicit none
+
+type(joueur), intent(inout) :: player
+type(remplissage), dimension(:,:),intent(in):: tabremplissage
+
+integer :: X,Y
+
+X=player%X
+Y=player%Y
+
+select case (tabremplissage(X,Y)%state)
+    case (3)
+        player%AA=1
+    case (4)
+        player%XX=1
+end select
+
+end subroutine
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !2.création de la fonction de changement d'etat des remplissages
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-contains
-
-type(remplissage) function changement_etat_remplissage(rempi,rempf)
+subroutine changement_etat_remplissage(tabremplissage,player)
     implicit none
 
-type(remplissage), intent(in) :: rempi
-type(remplissage), intent(out) :: rempf
+type(remplissage), dimension(:,:),intent(inout):: tabremplissage
+type(joueur), intent(in) :: player
 
-select case (rempi%state)
+integer :: X,Y
+
+X=player%X
+Y=player%Y
+
+select case (tabremplissage(X,Y)%state)
     case (2)
-        rempf%state = 1
+        tabremplissage(X,Y)%state = 1
     case (3,4)
-        rempf%state = 2
-    case default
-        rempf%state=rempi%state
+        tabremplissage(X,Y)%state = 2
 end select
 
-end function changement_etat_remplissage
+end subroutine
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!5. assemblage squelette : mis a jours des etats
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+subroutine changement_etat (tabremplissage,player)
+    implicit none
+
+type(joueur), intent(inout) :: player
+type(remplissage), dimension(:,:),intent(inout):: tabremplissage
+
+call changement_etat_joueur(tabremplissage,player)
+call changement_etat_remplissage(tabremplissage,player)
+
+end subroutine
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !2. création de la fonction de changement de score (compteur)
@@ -138,36 +185,6 @@ XX=player%XX
 end function score
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!2.création de la fonction de changement d'etat du joueur
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-type(joueur) function changement_etat_joueur(tabremplissage,joueuri,joueurf)
-    implicit none
-
-type(joueur), intent(inout) :: joueuri
-type(joueur), intent(out) :: joueurf
-type(remplissage), dimension(:,:),intent(in):: tabremplissage
-
-integer :: X,Y
-
-joueurf=joueuri
-X=joueuri%X
-Y=joueuri%Y
-
-select case (tabremplissage(X,Y)%state)
-    case (3)
-        joueurf%AA=1
-    case (4)
-        joueurf%XX=1
-    case default
-        joueurf%AA=joueuri%AA
-        joueurf%XX=joueuri%XX
-end select
-
-end function
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !3. affichage tableau remplissage => adaptation de l'affichage dynamique (1) pour le jeu
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -203,9 +220,13 @@ subroutine affichage(tabremplissage,player)
                 case default
                     call mvprintw(k,l,' '//char(0))
             end select
-
-            call mvprintw(X,Y,'C'//char(0))
-
+            if (player%XX==1)then
+                call mvprintw(X,Y,'X'//char(0))
+            elseif (player%AA==1) then
+                call mvprintw(X,Y,'A'//char(0))
+            else
+                call mvprintw(X,Y,'C'//char(0))
+            end if
         end do
     end do
     call refresh()
@@ -241,15 +262,15 @@ do while (touche/=258 .and. touche/=259 .and. touche/=260 .and. touche/=261) ! n
                     touche=0 ! n'avance pas en cas de mur
                 end if
             case(259)
-                if (tabremplissage(i-1,j)%state==5 .or. tabremplissage(i+1,j)%state==6) then
+                if (tabremplissage(i-1,j)%state==5 .or. tabremplissage(i-1,j)%state==6) then
                     touche=0
                 end if
             case(260)
-                if (tabremplissage(i,j-1)%state==5 .or. tabremplissage(i+1,j)%state==6) then
+                if (tabremplissage(i,j-1)%state==5 .or. tabremplissage(i,j-1)%state==6) then
                     touche=0
                 end if
             case(261)
-                if (tabremplissage(i,j+1)%state==5 .or. tabremplissage(i+1,j)%state==6) then
+                if (tabremplissage(i,j+1)%state==5 .or. tabremplissage(i,j+1)%state==6) then
                     touche=0
                 end if
         end select
