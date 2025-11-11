@@ -47,20 +47,37 @@ v création d'une lecture du fichier -> chaine de caractere (creation du labyrin
 v remplir le tableau des remplissages en fct de map.txt (analyse du type de charactere )
 
 5
+v assembler le squelette
+v optimiser le squelette
 - analyse fichier pour mettre le score et le nom joueur au bon endroit
 
 
 fonctions :
-- function changement_etat_remplissage(rempi,rempf)
-- function score (remp,player,compt)
-- function changement_etat_joueur(tabremplissage,joueuri,joueurf)
-- subroutine affichage(tabremplissage,player)
-- subroutine deplacement(tabremplissage,player)
+v subroutine changement_etat_remplissage(rempi,rempf)
+v function score (remp,player,compt)
+ subroutine
+v changement_etat_joueur(tabremplissage,joueuri,joueurf)
+v subroutine affichage(tabremplissage,player)
+v subroutine deplacement(tabremplissage,player)
 
 
 
-reste à faire => empilement des fonctions + debugging squelette 
+reste à faire => 
+v compteur de coins mangé pour faire un end game
+v affichage score a la fin ( qui clignote parecque c'est cool )
 
+
+si reste de temps:
+- dectection taille map ( retirer valeurs fixes )
+- /!\ concept tps et fps ( bug affichage quand fleche reste appuyé pour toute une ligne)
+
+
+
+
+
+
+si reste vrm du temps: 
+- musique pacman
 
 
 

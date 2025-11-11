@@ -105,11 +105,12 @@ end subroutine
 !2.création de la fonction de changement d'etat des remplissages
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-subroutine changement_etat_remplissage(tabremplissage,player)
+subroutine changement_etat_remplissage(tabremplissage,player,coins)
     implicit none
 
 type(remplissage), dimension(:,:),intent(inout):: tabremplissage
 type(joueur), intent(in) :: player
+integer, intent(inout) :: coins
 
 integer :: X,Y
 
@@ -119,6 +120,7 @@ Y=player%Y
 select case (tabremplissage(X,Y)%state)
     case (2)
         tabremplissage(X,Y)%state = 1
+        coins = coins - 1
     case (3,4)
         tabremplissage(X,Y)%state = 2
 end select
@@ -129,14 +131,15 @@ end subroutine
 !5. assemblage squelette : mis a jours des etats
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-subroutine changement_etat (tabremplissage,player)
+subroutine changement_etat (tabremplissage,player,coins)
     implicit none
 
 type(joueur), intent(inout) :: player
 type(remplissage), dimension(:,:),intent(inout):: tabremplissage
+integer, intent(inout) :: coins
 
 call changement_etat_joueur(tabremplissage,player)
-call changement_etat_remplissage(tabremplissage,player)
+call changement_etat_remplissage(tabremplissage,player,coins)
 
 end subroutine
 
@@ -144,41 +147,36 @@ end subroutine
 !2. création de la fonction de changement de score (compteur)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-integer function score (remp,player,compt)
+function score (player,comptc,compts) result(Sc)
     implicit none
 
-    type(remplissage), intent(in) :: remp
     type(joueur), intent(in) :: player !variables qui passe de 0 a 1 quand un bonus est mangé ( modifié dans la fonction de complacement)
-    integer, intent(inout) :: compt
+    integer, intent(inout) :: comptc, compts ! compteur de coins, compteur de coups (score)
+    integer :: Sc
 
     integer ::AA,XX
 
-    select case (remp%state)
-        case(2)
-            compt = compt + 1
-        case(3)
-            compt = compt + 1
-        case(4)
-            compt = compt + 1
-        case default
-            compt = compt + 0
-end select
+Sc=compts+1
+comptc=comptc + 1
+
 
 AA=player%AA
 XX=player%XX
 
-    if (AA==0 .and. XX==0) then
-        if (MOD(compt,15)==0) then
-            compt = compt - 1
+    if (XX==1) then
+        if (comptc>=7) then
+            Sc = Sc - 1
+            comptc = 0
         end if
-    else if (AA==1 .and. XX==0) then
-        if (MOD(compt,10)==0) then
-            compt = compt - 1
+    elseif (AA==1) then
+        if (comptc>=10) then
+            Sc = Sc - 1
+            comptc = 0
         end if
-    else if (XX==1) then
-        if (MOD(compt,7)==0) then
-            compt = compt - 1
+    else
+        if (comptc>=15) then
+            Sc = Sc - 1
+            comptc = 0
         end if
     end if
 

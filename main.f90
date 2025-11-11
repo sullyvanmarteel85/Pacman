@@ -8,8 +8,8 @@ program pacman_game
 ! DEF VARIABLE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-integer :: p,er,ert,er2,m,N,i,j,compteur,AA,XX
-character(50):: name,d
+integer :: p,er,ert,er2,m,N,i,j,compteur,AA,XX,coins,S,C,comptc,compts
+character(50):: name,d,scorefinal
 type(c_ptr) :: win
 logical :: bump
 
@@ -20,7 +20,7 @@ character(1024):: tampon
 type(remplissage), dimension(:,:),allocatable:: tabremplissage
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!DEF PACMAN
+!SPAWN PACMAN
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 pacmanplayer%X=2
@@ -107,6 +107,15 @@ close(unit=10) ! à mettre a la fin du programme
 !print*,remps
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!initialisation compteurs
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+coins=0
+comptc=0
+compts=0
+S=0
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !2. créer un contenant de remplissage (tableau)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -136,10 +145,13 @@ do i=1,m
                     tabremplissage(i,j)%state = 5
                 case('o')
                     tabremplissage(i,j)%state = 2
+                    coins = coins + 1
                 case('a')
                     tabremplissage(i,j)%state = 3
+                    coins = coins + 1
                 case('x')
                     tabremplissage(i,j)%state = 4
+                    coins = coins + 1
                 case('.')
                     tabremplissage(i,j)%state = 1
                 case default
@@ -151,7 +163,7 @@ end do
 close(unit=11)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!initialisation
+!initialisation de l'écran
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 win=initscr()
@@ -163,11 +175,32 @@ call keypad(win,logical(.true.,c_bool))
 !squelette
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 call affichage(tabremplissage,pacmanplayer)
-do while (1==1)
+do while (coins>0)
     call deplacement(tabremplissage,pacmanplayer)
-    call changement_etat (tabremplissage,pacmanplayer)
+    S=score(pacmanplayer,comptc,S)
+    call changement_etat (tabremplissage,pacmanplayer,coins)
     call affichage(tabremplissage,pacmanplayer)
 end do
 
+!call clear()
+!write(scorefinal,'(I0)') S
+!call mvprintw(10,33,"score:"//char(0))
+!call mvprintw(13,34,scorefinal//char(0))
+!call refresh()
+!call sleep(5)
+
+write(scorefinal,'(I0)') S
+bump = .false.
+
+do while (1==1)
+    call clear()
+    bump= .not. bump
+    call mvprintw(10,33,"score:"//char(0))
+    if (bump) then
+        call mvprintw(13,34,scorefinal//char(0))
+    end if
+    call refresh()
+    call usleep(300000)
+end do
 
 end program pacman_game
