@@ -48,7 +48,7 @@ end if
 close(unit=10) ! à mettre a la fin du programme
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!1. affichage dynamique contrôlable
+!1. affichage dynamique contrôlable (etape de création)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !win=initscr() !permet de lancer ncurses /!\ NE PAS METTRE EN COMMENTAIRE QUAND UTILISE CAR PERMETS D'UTILISER LES FCT DE LA BIBLIOTHEQUE
@@ -67,7 +67,7 @@ close(unit=10) ! à mettre a la fin du programme
 !end do
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!1. détection et réaction d'appui de touches
+!1. détection et réaction d'appui de touches (etape de création)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !do while (1==1)
@@ -87,7 +87,7 @@ close(unit=10) ! à mettre a la fin du programme
 !end do
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!2. création d'un remplissage
+!2. création d'un remplissage (etape de création)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ! -> rattaché a #creation type et # def variable
@@ -167,6 +167,12 @@ close(unit=11)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 win=initscr()
+
+
+call system('start "" ".\pacman_music.mp3"')
+!mettre la musique d'ouverture de pacman
+
+
 call cbreak()
 call noecho()
 call keypad(win,logical(.true.,c_bool))
